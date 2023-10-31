@@ -1,95 +1,115 @@
-import java.time.LocalDate;  
-
+import java.time.LocalDate;
+import java.util.Scanner;  
+import java.time.format.DateTimeFormatter;
 
 public class Store { 
-	Items[] rasberries= new Items[10];
+	Items[] raspberries= new Items[10];
 	int rasCount=0; //tracks the amount of raspberries in the store
 	Items[] Downy= new Items[5];
 	int soapCount=0;//tracks the amount of downy in the store
 	Items[] Tropicana= new Items[7];
 	int juiceCount=0;//tracks the amount of tropicana in the store
 	
-	public void createProduct(String product, String name, LocalDate date, int time) {
-		if(name == "rasberries") {
-			//checks if raspberries have reached their max
-			if(rasCount == 10) {
-				System.out.println("We are unable to create another raspberry because the product has reached its maximum");
-			}else{
-				//checks if the product name is unique by comparing it to every product ID in the raspberry category
-				String status;
-				status=validateID(product);
-				if( status != null) {
-					System.out.println("ProductName should have a uniqueID, the ProductName already exists with the same uniqueID");
-				}
-				if(status == null) {
-					//if productName is unique, the instance for that object is created and is saved in the store
-					Items fruit = new Items();
-					fruit.ProductName= name;
-					fruit.ProductID = product;
-					fruit.ExpiryDate = date;
-					fruit.MarkdownDate = fruit.ExpiryDate.minusDays(time);
-					rasberries[rasCount]=fruit;
-					rasCount++;
-					System.out.println("ProductName with the ProductID created successfully");
-
-				}
-			}
-		}
-		if(name == "Downy") {
-			//checks if Downy have reached their max
-			if(soapCount == 5) {
-				System.out.println("We are unable to create another Downy because the product has reached its maximum");
+	public void createProduct(String product, String name) {
+		//String product, String name, LocalDate date, int time
+		Scanner input = new Scanner(System.in);
+		if(name.equals("") || product.equals("")) {
+			System.out.println("ProductID and ProductName are required to create a product. The other arguments take default values.");
+		}else {
+			System.out.println("Would you like to provide the date and time for markdown?");
+			String answer =input.nextLine();
+			if(answer.equals("no")) {
+				defaultCreateProduct(product,name);
 			}else {
-				//checks if the product name is unique by comparing it to every product ID in the Downy category
-				String status;
-				status=validateID(product);
-				if( status != null) {
-					System.out.println("ProductName should have a uniqueID, the ProductName already exists with the same uniqueID");
-				}
-				if(status == null) {
-					Items soap = new Items();
-					soap.ProductName= name;
-					soap.ProductID = product;
-					soap.ExpiryDate = date;
-					soap.MarkdownDate = soap.ExpiryDate.minusDays(time);
-					Downy[soapCount]=soap;
-					soapCount++;
-					System.out.println("ProductName with the ProductID created successfully");
-				}
-			}
-		}
-		if(name == "Tropicana") {
-			//checks if Tropicana have reached their max
-			if(juiceCount == 7) {
-				System.out.println("We are unable to create another Tropicana because the product has reached its maximum");
-			}else{
-				//checks if the product name is unique by comparing it to every product ID in the Downy category
-				String status;
-				status=validateID(product);
-				if( status != null) {
-					System.out.println("ProductName should have a uniqueID, the ProductName already exists with the same uniqueID");
-				}
-				if(status == null) {
-					//if productName is unique, the instance for that object is created and is saved in the store
-					Items juice = new Items();
-					juice.ProductName= name;
-					juice.ProductID = product;
-					juice.ExpiryDate = date;
-					juice.MarkdownDate = juice.ExpiryDate.minusDays(time);
-					Tropicana[juiceCount]=juice;
-					juiceCount++;
-					System.out.println("ProductName with the ProductID created successfully");
-
-					}
-			}
-		}
+				System.out.println("What is the expiration date? Please provide in this format: DD-MMM-YYYY. Example: 30 Oct 2023");
+				String date=input.nextLine();
+				DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM uuuu");
+				LocalDate dateUpdated=LocalDate.parse(date, dateTimeFormatter);
+				System.out.println("What is the time duration for the markdown date");
+				int time=input.nextInt();
+				input.nextLine();
+				
+				if(name.equals("raspberries")) {
+					//checks if raspberries have reached their max
+					if(rasCount == 10) {
+						System.out.println("We are unable to create another raspberry because the product has reached its maximum");
+					}else{
+						//checks if the product name is unique by comparing it to every product ID in the raspberry category
+						String status;
+						status=validateID(product);
+						if( status != null) {
+							System.out.println("ProductName should have a uniqueID, the ProductName already exists with the same uniqueID");
+						}
+						if(status == null) {
+							//if productName is unique, the instance for that object is created and is saved in the store
+							Items fruit = new Items();
+							fruit.ProductName= name;
+							fruit.ProductID = product;
+							fruit.ExpiryDate = dateUpdated;
+							fruit.MarkdownDate = fruit.ExpiryDate.minusDays(time);
+							raspberries[rasCount]=fruit;
+							rasCount++;
+							System.out.println("ProductName with the ProductID created successfully");
 		
+						}
+					}
+				}
+				if(name.equals("Downy") || name.equals("downy")) {
+					//checks if Downy have reached their max
+					if(soapCount == 5) {
+						System.out.println("We are unable to create another Downy because the product has reached its maximum");
+					}else {
+						//checks if the product name is unique by comparing it to every product ID in the Downy category
+						String status;
+						status=validateID(product);
+						if( status != null) {
+							System.out.println("ProductName should have a uniqueID, the ProductName already exists with the same uniqueID");
+						}
+						if(status == null) {
+							Items soap = new Items();
+							soap.ProductName= name;
+							soap.ProductID = product;
+							soap.ExpiryDate = dateUpdated;
+							soap.MarkdownDate = soap.ExpiryDate.minusDays(time);
+							Downy[soapCount]=soap;
+							soapCount++;
+							System.out.println("ProductName with the ProductID created successfully");
+						}
+					}
+				}
+				if(name.equals("Tropicana") || name.equals("tropicana")) {
+					//checks if Tropicana have reached their max
+					if(juiceCount == 7) {
+						System.out.println("We are unable to create another Tropicana because the product has reached its maximum");
+					}else{
+						//checks if the product name is unique by comparing it to every product ID in the Downy category
+						String status;
+						status=validateID(product);
+						if( status != null) {
+							System.out.println("ProductName should have a uniqueID, the ProductName already exists with the same uniqueID");
+						}
+						if(status == null) {
+							//if productName is unique, the instance for that object is created and is saved in the store
+							Items juice = new Items();
+							juice.ProductName= name;
+							juice.ProductID = product;
+							juice.ExpiryDate = dateUpdated;
+							juice.MarkdownDate = juice.ExpiryDate.minusDays(time);
+							Tropicana[juiceCount]=juice;
+							juiceCount++;
+							System.out.println("ProductName with the ProductID created successfully");
+		
+							}
+					}
+				}
+			}
+		}
 	}
 	
-	public void createProduct(String product, String name) {
-	//checks if item is a rasberry
-		if(name == "rasberries") {
-			//checks if rasberries have reached their max
+	public void defaultCreateProduct(String product, String name) {
+	//checks if item is a raspberry
+		if(name.equals("raspberries") || name.equals("raspberry") ) {
+			//checks if raspberries have reached their max
 			if(rasCount == 10) {
 				System.out.println("We are unable to create another raspberry because the product has reached its maximum");
 			}else{
@@ -104,16 +124,17 @@ public class Store {
 					Items fruit = new Items();
 					fruit.ProductName= name;
 					fruit.ProductID = product;
-					rasberries[rasCount]=fruit;
+					raspberries[rasCount]=fruit;
 					fruit.setExpiration(); //it is given the default value
 					fruit.setMarkdown();//it is given the default value
-					rasberries[rasCount] = fruit;
+					raspberries[rasCount] = fruit;
 					rasCount++;
 					System.out.println("ProductName with the ProductID created successfully");
 				}
 				}
 			}
-		if(name == "Downy") {
+		if(name.equals("Downy") || name.equals("downy")) {
+			//checks if item is a raspberry
 			if(soapCount == 5) {
 				System.out.println("We are unable to create another Downy because the product has reached its maximum");
 			}else {
@@ -137,7 +158,7 @@ public class Store {
 			}
 		}
 			
-		if(name == "Tropicana") {
+		if(name.equals("Tropicana") || name.equals("tropicana")) {
 			if(juiceCount == 7) {
 				System.out.println("We are unable to create another Tropicana because the product has reached its maximum");
 			}else{
@@ -164,29 +185,24 @@ public class Store {
 				
 		
 	}
-	
-	public void createProduct() {
-		System.out.println("ProductID and ProductName are required to create a product. The other arguments take default values.");
-	}
-	
 	public void displayProduct(String name, String ID){
 		Boolean status=true;
 		//checks if the product exists, if not message will get printed
 		String created =validateID(ID);
-		if( created == null) {
+		if( created == null || !name.equals(created)) {
 			System.out.println("Productname/ProductID not found");
 		}
 		//if the product exists, its attributes will get printed
 		if( created != null) {
-			if(name == "rasberries") {
+			if(name.equals("raspberries") || name.equals("raspberry")) {
 				//prints out the products attributes if name and ID match
-				status=printProduct(ID, rasberries, rasCount);
+				status=printProduct(ID, raspberries, rasCount);
 				//if we have the ID but it belongs to a different item name, this will print
 				if(status == false) {
 					System.out.println("The product name you provided does not match");
 				}
 			}
-			if(name == "Downy") {
+			if(name.equals("Downy") || name.equals("downy")) {
 				//prints out the products attributes if name and ID match
 				status=printProduct(ID, Downy, soapCount);
 				//if we have the ID but it belongs to a different item name, this will print
@@ -194,7 +210,7 @@ public class Store {
 					System.out.println("The product name you provided does not match");
 				}
 			}
-			if(name == "Tropicana") {
+			if(name.equals("Tropicana") || name.equals("tropicana")) {
 				//prints out the products attributes if name and ID match
 				status=printProduct(ID, Tropicana, juiceCount);
 				//if we have the ID but it belongs to a different item name, this will print
@@ -203,6 +219,7 @@ public class Store {
 				}
 			}
 		}
+		
 	}
 	
 	//prints out the attributes of the product passed in
@@ -210,7 +227,7 @@ public class Store {
 		Boolean status=false;
 
 		for(int i =0; i< count;i++) {
-			if(array[i].ProductID == ID) {
+			if(array[i].ProductID.equals(ID)) {
 				//once the product ID is found in the array, it will print it the name, ID, expiry date and markdown date
 				System.out.println("Product name: "+array[i].ProductName);
 				System.out.println("Product ID: "+array[i].ProductID);
@@ -224,14 +241,11 @@ public class Store {
 	}
 	
 	//if no parameters are given
-	public void displayProduct(){
-		if(rasCount ==0 && soapCount==0 && juiceCount==0 ) {
-			System.out.println("Sorry we don't have any products");
-		}else {
+	public void emptyDisplayProduct(){
 			//if its a raspberry, prints out the name and product ID
 			for(int i =0; i< rasCount; i++) {
-				System.out.println("Product name: rasberries");
-				System.out.println("Product ID: "+rasberries[i].ProductID);
+				System.out.println("Product name: raspberries");
+				System.out.println("Product ID: "+raspberries[i].ProductID);
 			}
 			//if its a Downy, prints out the name and product ID
 			for(int i =0; i< soapCount; i++) {
@@ -243,7 +257,7 @@ public class Store {
 				System.out.println("Product name: Tropicana");
 				System.out.println("Product ID: "+Tropicana[i].ProductID);
 			}
-		}
+		
 	}
 	
 	//checks if the product ID provided is in the system
@@ -251,18 +265,18 @@ public class Store {
 		String name=null;
 		
 		for(int i= 0;i< rasCount;i++) {
-			if(ID == rasberries[i].ProductID) {
-				name="rasberries";
+			if(ID.equals(raspberries[i].ProductID)) {
+				name="raspberries";
 				
 			}
 		}
 		for(int i= 0;i< soapCount;i++) {
-			if(ID == Downy[i].ProductID) {
+			if(ID.equals(Downy[i].ProductID)) {
 				name="Downy";
 			}
 		}
 		for(int i= 0;i< juiceCount;i++) {
-			if(ID == Tropicana[i].ProductID) {
+			if(ID.equals(Tropicana[i].ProductID)) {
 				name="Tropicana";
 			}
 		}
@@ -283,22 +297,22 @@ public class Store {
 		}
 		//if we do have the product ID, the code below will run
 		if(name != null) {
-			if(name == "rasberries" ) {
-				//min for rasberries is 5
-				//if one rasberry needs to be replenished
+			if(name.equals("raspberries")) {
+				//min for raspberries is 5
+				//if one raspberry needs to be replenished
 				if(5 - rasCount == 1) {
-					System.out.println(5-rasCount+" rasberry need to be replenished");
+					System.out.println(5-rasCount+" raspberry need to be replenished");
 				}
-				//if many rasberries needs to be replenished
+				//if many raspberries needs to be replenished
 				else if(5 - rasCount > 1){
-					System.out.println(5-rasCount+" rasberries need to be replenished");
+					System.out.println(5-rasCount+" raspberries need to be replenished");
 				}
-				//if no rasberries need to be replenished
+				//if no raspberries need to be replenished
 				else {
-					System.out.println("No rasberries need to be replenished");
+					System.out.println("No raspberries need to be replenished");
 				}
 			}
-			if(name == "Downy" ) {
+			if(name.equals("Downy")) {
 				//min for Downy is 2
 				if(soapCount < 2) {
 					//if many Downy's needs to be replenished
@@ -309,7 +323,7 @@ public class Store {
 					System.out.println("No Downy need to be replenished");
 				}
 			}
-			if(name == "Tropicana" ) {
+			if(name.equals("Tropicana")) {
 				//min for Tropicana is 6
 				if(juiceCount < 6) {
 					//if many Tropicana needs to be replenished
@@ -326,17 +340,17 @@ public class Store {
 	}
 	//if no parameters are given
 	public void displayProductToRefill(){
-		//if one rasberry needs to be replenished
+		//if one raspberry needs to be replenished
 		if(5 - rasCount == 1) {
-			System.out.println(5-rasCount+" rasberry need to be replenished");
+			System.out.println(5-rasCount+" raspberry need to be replenished");
 		}
-		//if many rasberries needs to be replenished
+		//if many raspberries needs to be replenished
 		else if(5 - rasCount > 1){
-			System.out.println(5-rasCount+" rasberries need to be replenished");
+			System.out.println(5-rasCount+" raspberries need to be replenished");
 		}
-		//if no rasberries need to be replenished
+		//if no raspberries need to be replenished
 		else {
-			System.out.println("No rasberries need to be replenished");
+			System.out.println("No raspberries need to be replenished");
 		}
 		//if many Downy's needs to be replenished
 		if(soapCount < 2) {
@@ -362,27 +376,23 @@ public class Store {
 			System.out.println("Productname/ProductID not found");
 		}
 		if(name != null) {
-			if(name == "rasberries") {
-				System.out.println("The number of rasberries: "+rasCount);
+			if(name.equals("raspberries")) {
+				System.out.println("The number of raspberries: "+rasCount);
 			}
-			if(name == "Downy") {
+			if(name.equals("Downy")) {
 				System.out.println("The number of Downy: "+soapCount);
 			}
-			if(name == "Tropicana") {
+			if(name.equals("Tropicana")) {
 				System.out.println("The number of Tropicana: "+juiceCount);
 			}
 		}
 	}
 	public void displayProductCount() {
-		//prints if there are no products
-		if(rasCount ==0 && soapCount==0 && juiceCount==0 ) {
-			System.out.println("Sorry we don't have any products");
-		}else {
-			System.out.println("The number of each product:");
-			System.out.println("rasberries: "+rasCount);
-			System.out.println("Downy: "+soapCount);
-			System.out.println("Tropicana: "+juiceCount);
-		}
+		System.out.println("The number of each product:");
+		System.out.println("raspberries: "+rasCount);
+		System.out.println("Downy: "+soapCount);
+		System.out.println("Tropicana: "+juiceCount);
+	
 	}
 	public void displayProductsExpiryDate(String ID){
 		String name=validateID(ID);
@@ -391,16 +401,16 @@ public class Store {
 		}
 		if(name != null) {
 			//checks if ID belongs to raspberries
-			if(name == "rasberries") {
-				printExpiry(ID, rasberries,rasCount);
+			if(name.equals("raspberries") || name.equals("raspberry")) {
+				printExpiry(ID, raspberries,rasCount);
 			}
 			
 			//checks if ID belongs to Downy
-			if(name == "Downy") {
+			if(name.equals("Downy") || name.equals("downy")) {
 				printExpiry(ID, Downy,soapCount);
 			}
 			//checks if ID belongs to Tropicana
-			if(name == "Tropicana") {
+			if(name.equals("Tropicana") || name.equals("tropicana")) {
 				printExpiry(ID, Tropicana,juiceCount);
 			}
 		}
@@ -408,7 +418,7 @@ public class Store {
 	//prints out the expiration date of the item
 	public void printExpiry(String ID, Items[] array, int count) {
 		for(int i= 0;i< count;i++) {
-			if(ID == array[i].ProductID) {
+			if(ID.equals(array[i].ProductID)) {
 				System.out.println("The Expiry date of "+ID+" is "+array[i].ExpiryDate);
 				break;
 			}
@@ -416,24 +426,19 @@ public class Store {
 		
 	}
 	public void displayProductsExpiryDate(){
-		//if there are no products
-		if(rasCount ==0 && soapCount==0 && juiceCount==0 ) {
-			System.out.println("Sorry we don't have any products");
+		//prints expiration date of raspberries items
+		for(int i= 0;i< rasCount;i++) {
+			System.out.println("The Expiry date of "+raspberries[i].ProductID+" is "+raspberries[i].ExpiryDate);
 		}
-		else {
-			//prints expiration date of raspberries items
-				for(int i= 0;i< rasCount;i++) {
-					System.out.println("The Expiry date of "+rasberries[i].ProductID+" is "+rasberries[i].ExpiryDate);
-				}
-				//prints expiration date of Downy items
-				for(int i= 0;i< soapCount;i++) {
-					System.out.println("The Expiry date of "+Downy[i].ProductID+" is "+Downy[i].ExpiryDate);
-				}
-				//prints expiration date of Tropicana items
-				for(int i= 0;i< juiceCount;i++) {
-					System.out.println("The Expiry date of "+Tropicana[i].ProductID+" is "+Tropicana[i].ExpiryDate);
-				}
+		//prints expiration date of Downy items
+		for(int i= 0;i< soapCount;i++) {
+			System.out.println("The Expiry date of "+Downy[i].ProductID+" is "+Downy[i].ExpiryDate);
 		}
+		//prints expiration date of Tropicana items
+		for(int i= 0;i< juiceCount;i++) {
+			System.out.println("The Expiry date of "+Tropicana[i].ProductID+" is "+Tropicana[i].ExpiryDate);
+		}
+		
 		
 	}
 	public void displayExpiredProducts(){
@@ -443,7 +448,7 @@ public class Store {
 			System.out.println("Sorry we don't have any products");
 		}else {
 			//checks if any raspberries are expired
-			status=printExpired(rasberries,rasCount);
+			status=printExpired(raspberries,rasCount);
 			
 			//checks if any Downy are expired
 			status=printExpired(Downy,soapCount);
@@ -479,7 +484,7 @@ public class Store {
 			System.out.println("Sorry we don't have any products");
 		}else {
 		   //checks if raspberries are past their markdown date
-			status=printInMarkdown(rasberries, rasCount);
+			status=printInMarkdown(raspberries, rasCount);
 			
 		    //checks if Downy are past their markdown date
 			status=printInMarkdown(Downy, soapCount);
@@ -513,7 +518,7 @@ public class Store {
 			System.out.println("Sorry we don't have any products");
 		}else {
 			//checks if raspberries have any due in a week
-			status=printForMarkdown(rasberries, rasCount);
+			status=printForMarkdown(raspberries, rasCount);
 			
 			//checks if Downy have any due in a week
 			status=printForMarkdown(Downy, soapCount);	
@@ -544,35 +549,98 @@ public class Store {
 	}
 	
 	public static void main(String[] args) {
-		
-		Store l1 = new Store();
-		l1.createProduct();
-		//l1.createProduct("N56U","Tropicana");
-		//l1.createProduct("J49L","Downy",LocalDate.parse("2022-10-29"),7);
-		//l1.createProduct("N89O","rasberries",LocalDate.parse("2022-10-29"),7);
-		//l1.createProduct("W35O","rasberries");
-		//l1.createProduct("Wjhk","rasberries");
-		//l1.createProduct("A31L","Tropicana",LocalDate.parse("2022-10-29"),7);
-		l1.createProduct("K56U","Tropicana");
-		l1.createProduct("K56U","Downy");
-		l1.createProduct("1244","Downy",LocalDate.parse("2022-10-29"),7);
-		//l1.createProduct("bnjl","Downy");
-		//l1.createProduct("K56U","Downy");
-		//l1.createProduct("K25S","Downy", LocalDate.now(),2);
-		l1.createProduct("Kkkf","Tropicana");
-		l1.createProduct("Wlpp","rasberries");
-		//l1.createProduct("Wlsp","rasberries");
-		l1.createProduct("Wsgh","rasberries",LocalDate.parse("2023-05-03"),7);
-		l1.createProduct("bnjl","rasberries",LocalDate.parse("2022-10-29"),7);
-		l1.createProduct("oooO","rasberries");
-		l1.createProduct("oooO","rasberries");
-		//l1.createProduct("Kkkk","Tropicana");
-		//l1.createProduct("Kkkp","Tropicana");
-		l1.displayProductToRefill("uuuu");
-		l1.displayProductToRefill("1244");
-		
-		//l1.displayProductsForMarkDown();
-
+		Scanner input = new Scanner(System.in);
+		Store store = new Store();
+		Boolean on = true;
+		while(on) {
+			System.out.println("What would you like to do?");
+			System.out.println("1: Create a product");
+			System.out.println("2: Display a product");
+			System.out.println("3: Display products that need to be refilled");
+			System.out.println("4: Display product count");
+			System.out.println("5: Display product expiration date");
+			System.out.println("6: Display all expired products");
+			System.out.println("7: Display products past the markdown date");
+			System.out.println("8: Display products whose markdown date is in a week");
+			System.out.println("9: Log out");
+			int choice = input.nextInt();
+			String name;
+			String product;
+			input.nextLine();
+			if(choice == 1) {
+				System.out.println("What product would you like to initalize: raspberries, Downy or Tropicana");
+				name=input.nextLine();
+				System.out.println("What is the product ID? Example: 25871");
+				product=input.nextLine();
+				store.createProduct(product,name);
+				continue;
+			}	if(choice == 6) {
+				store.displayExpiredProducts();
+				continue;
+			}
+			if(choice == 7) {
+				store.displayProductsInMarkDown();
+				continue;
+			}
+			if(choice == 8) {
+				store.displayProductsForMarkDown();
+				continue;
+			}
+			if(choice == 9 ) {
+				System.out.println("Goodbye!");
+				on = false;
+				continue;
+			}
+			if(store.rasCount ==0 && store.soapCount==0 && store.juiceCount==0 ) {
+				System.out.println("Sorry we don't have any products");
+				continue;
+			}else {
+				if(choice == 2) {
+					System.out.println("Would you like to provide the name and ID of the product");
+					String answer = input.nextLine();
+					if(answer.equals("no")){
+						store.emptyDisplayProduct();
+					}else {
+						System.out.println("What is the name of the product?");
+						name = input.nextLine();
+						System.out.println("What is the ID of the product?");
+						String ID = input.nextLine();
+						store.displayProduct(name,ID);
+					}
+				}if(choice == 3) {
+					System.out.println("Would you like to provide the product ID?");
+					String answer = input.nextLine();
+					if(answer.equals("no")) {
+						store.displayProductToRefill();
+					}else {
+						System.out.println("What is the the ID of the product?");
+						product = input.nextLine();
+						store.displayProductToRefill(product);
+					}
+				}if(choice == 4) {
+					System.out.println("Would you like to provide a product ID?");
+					String answer = input.nextLine();
+					if(answer.equals("no")) {
+						store.displayProductCount();
+					}else {
+						System.out.println("What is the the ID of the product?");
+						product = input.nextLine();
+						store.displayProductCount(product);
+					}
+				}
+				if(choice == 5) {
+					System.out.println("Would you like to provide the product ID?");
+					String answer = input.nextLine();
+					if(answer.equals("no")) {
+						store.displayProductsExpiryDate();
+					}else {
+						System.out.println("What is the the ID of the product?");
+						product = input.nextLine();
+						store.displayProductsExpiryDate(product);
+					}
+				}
+			}
+		}
 		
 		
 	}
